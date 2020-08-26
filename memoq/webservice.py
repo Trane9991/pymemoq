@@ -11,7 +11,8 @@ This code is released under the MIT License.
 from abc import ABC, abstractmethod
 from urllib.parse import urljoin
 
-from zeep import CachingClient  # https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files
+# https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files
+from zeep import CachingClient, xsd
 
 
 DEFAULT_BASE_URL = 'http://localhost:8080'
@@ -22,14 +23,21 @@ class MemoQWebServiceBase(ABC):
     Abstract Base Class for memoQ Web Service API Services.
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
         self.base_url = base_url if base_url is not None else DEFAULT_BASE_URL
-        self.__client = CachingClient(wsdl=self.service_url)
+
+        client = CachingClient(wsdl=self.service_url)
+
+        if api_key:
+            header = xsd.ComplexType([xsd.Element('ApiKey', xsd.String())])
+            client.set_default_soapheaders([header(ApiKey=api_key)])
+
+        self.__client = client
 
     def __dir__(self) -> list:
         """
@@ -74,13 +82,13 @@ class MemoQAsynchronousTasksService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tasksservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -101,13 +109,13 @@ class MemoQELMService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/elmservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -128,13 +136,13 @@ class MemoQFileManagerService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/filemanagerservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -155,13 +163,13 @@ class MemoQLightResourceService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/lightresourceservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -182,13 +190,13 @@ class MemoQLiveDocsService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/livedocsservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -209,13 +217,13 @@ class MemoQSecurityService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/securityservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -236,13 +244,14 @@ class MemoQServerProjectService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/serverprojectservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        print("adsdasdadas")
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -263,13 +272,13 @@ class MemoQTBService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tbservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:
@@ -290,13 +299,13 @@ class MemoQTMService(MemoQWebServiceBase):
     https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tmservice.html
     """
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, api_key: str = None):
         """
         Initializer for the class.
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        super().__init__(base_url)
+        super().__init__(base_url, api_key)
 
     @property
     def service_url(self) -> str:

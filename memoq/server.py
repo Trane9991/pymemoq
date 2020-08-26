@@ -67,13 +67,14 @@ class LightResources(Mapping):
 class MemoQServer(object):
     """Class that represents a memoQ server."""
 
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str, api_key: str):
         """
         Initializer for the class.
 
         :param base_url: Base URL for the memoQ server.  For example, 'http://localhost:8080'
         """
         self.base_url = base_url
+        self.api_key = api_key
         self._all_projects = None
         self._api_endpoints = {}
         self._light_resources = None
@@ -84,7 +85,7 @@ class MemoQServer(object):
 
         :returns: A str representing the memoQ server.
         """
-        return f"{self.__class__.__qualname__}(base_url='{self.base_url}')"
+        return f"{self.__class__.__qualname__}(base_url='{self.base_url}',api_key='{self.api_key}')"
 
     def __str__(self) -> str:
         """
@@ -100,7 +101,8 @@ class MemoQServer(object):
         try:
             return self._api_endpoints[light_resource_service_key]
         except KeyError:
-            self._api_endpoints[light_resource_service_key] = MemoQLightResourceService(self.base_url)
+            self._api_endpoints[light_resource_service_key] = MemoQLightResourceService(
+                self.base_url, self.api_key)
             return self._api_endpoints[light_resource_service_key]
 
     @property
@@ -109,7 +111,8 @@ class MemoQServer(object):
         try:
             return self._api_endpoints[live_docs_service_key]
         except KeyError:
-            self._api_endpoints[live_docs_service_key] = MemoQLiveDocsService(self.base_url)
+            self._api_endpoints[live_docs_service_key] = MemoQLiveDocsService(
+                self.base_url, self.api_key)
             return self._api_endpoints[live_docs_service_key]
 
     @property
@@ -118,7 +121,8 @@ class MemoQServer(object):
         try:
             return self._api_endpoints[security_service_key]
         except KeyError:
-            self._api_endpoints[security_service_key] = MemoQSecurityService(self.base_url)
+            self._api_endpoints[security_service_key] = MemoQSecurityService(
+                self.base_url, self.api_key)
             return self._api_endpoints[security_service_key]
 
     @property
@@ -127,7 +131,8 @@ class MemoQServer(object):
         try:
             return self._api_endpoints[server_project_service_key]
         except KeyError:
-            self._api_endpoints[server_project_service_key] = MemoQServerProjectService(self.base_url)
+            self._api_endpoints[server_project_service_key] = MemoQServerProjectService(
+                self.base_url, self.api_key)
             return self._api_endpoints[server_project_service_key]
 
     @property
@@ -218,7 +223,8 @@ class MemoQServer(object):
         :returns: A LightResources instance, suitable for running dict style lookups.
         """
         if self._light_resources is None:
-            self._light_resources = LightResources(self._light_resource_service)
+            self._light_resources = LightResources(
+                self._light_resource_service)
         return self._light_resources
 
     @property
